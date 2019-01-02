@@ -14,8 +14,7 @@ ApplicationWindow {
     }
     
     TextField {
-       text: tts.userName
-       placeholderText: qsTr("User name")
+       text: "this is a test"
        anchors.centerIn: parent
        
 //       onTextChanged: tts.userName = text
@@ -33,7 +32,7 @@ ApplicationWindow {
         x: 426
         y: 220
         text: "stop"
-       onPressed: {
+        onPressed: {
            tts.stop();
        }
     }
