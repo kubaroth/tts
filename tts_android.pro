@@ -1,6 +1,20 @@
 QT += quick
 CONFIG += c++11
 
+
+LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_eng/lib
+LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice/lib
+LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_pmod/lib
+LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/lib
+LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerehts/lib
+#LIBS += $$BUILD/../libs
+LIBS += -lcerevoice_aud_shared -lcerevoice_eng_shared -lcerevoice_pmod_shared -lcerehts_shared -lcerevoice_shared -lstdc++ -lutil -ldl -lm -lrt
+#LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerehts.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_aud.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_eng.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_pmod.a
+
+INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_eng/include
+INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
+QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/../libs'"
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the

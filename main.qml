@@ -23,7 +23,8 @@ ApplicationWindow {
 //       onTextChanged: tts.echo(text)       
        Keys.onPressed: {
               if (event.key == Qt.Key_Return) {
-                  tts.echo(text)
+//                  tts.echo(text)
+                  tts.play()
               }
           }       
     }
