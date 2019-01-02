@@ -20,9 +20,11 @@ public:
             qDebug() << "Called the C++ method with" << msg;
             return true;
     }
-    Q_INVOKABLE bool play() {    
-        char txt[] = "Testing 1 2 3. Using a callback, each phrase is returned separately.";
-        CPRCEN_engine_channel_speak(eng, chan, txt, strlen(txt), 1);
+    Q_INVOKABLE bool play(const QString &msg) {    
+//        char txt[] = "Testing 1 2 3. Using a callback, each phrase is returned separately.";
+//        CPRCEN_engine_channel_speak(eng, chan, txt, strlen(txt), 1);
+        
+        CPRCEN_engine_channel_speak(eng, chan, msg.toStdString().c_str(), msg.length(), 1);
 
     }
 
