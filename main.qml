@@ -23,9 +23,16 @@ ApplicationWindow {
 //       onTextChanged: tts.echo(text)       
        Keys.onPressed: {
               if (event.key == Qt.Key_Return) {
-//                  tts.echo(text)
                   tts.play()
               }
           }       
+    }
+    Button{
+        x: 426
+        y: 220
+        text: "stop"
+       onPressed: {
+           tts.stop();
+       }
     }
 }
