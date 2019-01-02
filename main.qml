@@ -20,6 +20,11 @@ ApplicationWindow {
        
 //       onTextChanged: tts.userName = text
 //       onTextChanged: {console.log("text change!")}
-       onTextChanged: tts.echo(text)
+//       onTextChanged: tts.echo(text)       
+       Keys.onPressed: {
+              if (event.key == Qt.Key_Return) {
+                  tts.echo(text)
+              }
+          }       
     }
 }
