@@ -1,33 +1,25 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 
+import custom.tts 1.0
+
 ApplicationWindow {
     visible: true
     width: 640
     height: 480
     title: qsTr("Tabs")
     
-    SwipeView {
-        id: swipeView
-        anchors.fill: parent
-        currentIndex: tabBar.currentIndex
-        
-        Page1Form {
-        }
-        
-        Page2Form {
-        }
+    TTS {
+        id: tts
     }
     
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
-        
-        TabButton {
-            text: qsTr("Page 1")
-        }
-        TabButton {
-            text: qsTr("Page 2")
-        }
+    TextField {
+       text: tts.userName
+       placeholderText: qsTr("User name")
+       anchors.centerIn: parent
+       
+//       onTextChanged: tts.userName = text
+//       onTextChanged: {console.log("text change!")}
+       onTextChanged: tts.echo(text)
     }
 }
