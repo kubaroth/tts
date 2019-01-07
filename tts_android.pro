@@ -1,19 +1,36 @@
 QT += quick
 CONFIG += c++11
 
+# gcc a.o -Wl,-Bstatic -lfoo -Wl,-Bdynamic -lbar
 
-LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_eng/lib
-LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice/lib
-LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_pmod/lib
-LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/lib
-LIBS += -L/home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerehts/lib
-#LIBS += $$BUILD/../libs
-LIBS += -lcerevoice_aud_shared -lcerevoice_eng_shared -lcerevoice_pmod_shared -lcerehts_shared -lcerevoice_shared -lstdc++ -lutil -ldl -lm -lrt
-#LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerehts.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_aud.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_eng.a -L/home/kuba/PRJ/cpp_rozne/tts_tests/libs/libcerevoice_pmod.a
 
-INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_eng/include
-INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
-QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/../libs'"
+QT += quick
+CONFIG += c++11
+
+linux:!android {
+    message("* Using settings for Unix/Linux.")
+
+    INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
+    INCLUDEPATH += /home/kuba/PRJ/cpp_rozne/tts_android/libs/include
+    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs/static -Wl,--start-group -lcerevoice_aud -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
+    LIBS += -lasound -lutil -ldl -lm -lrt
+
+    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+}
+
+android {
+    message("* Using settings for Android.")
+    #### Android arm-v7
+    INCLUDEPATH += //home/kuba/SRC/TTS/cerevoice_sdk_4.0.4_android_14358_beta/cerevoice_eng/include
+    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs_android/static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts  -Wl,--end-group
+
+    deployment.files=file_data/*
+    #deployment.files=file_data/license_eng.lic   # used for debugging if the file is copied into the right place
+    deployment.path=/assets/tts_data #all assets must go to "/assets" folder of your android package
+    INSTALLS += deployment
+}
+
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -26,8 +43,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+HEADERS += \
+    tts.h
+
 SOURCES += \
-        main.cpp \
+    main.cpp \
     tts.cpp
 
 RESOURCES += qml.qrc
@@ -38,10 +58,10 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-HEADERS += \
-    tts.h
+
