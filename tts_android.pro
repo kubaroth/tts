@@ -1,19 +1,14 @@
-QT += quick
+QT += quick multimedia
 CONFIG += c++11
 
 # gcc a.o -Wl,-Bstatic -lfoo -Wl,-Bdynamic -lbar
 
-
-QT += quick
-CONFIG += c++11
-
 linux:!android {
     message("* Using settings for Unix/Linux.")
 
-    INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
+#    INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
     INCLUDEPATH += /home/kuba/PRJ/cpp_rozne/tts_android/libs/include
-    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs/static -Wl,--start-group -lcerevoice_aud -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
-    LIBS += -lasound -lutil -ldl -lm -lrt
+    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs/static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
 
     QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
     QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
