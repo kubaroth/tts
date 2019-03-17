@@ -24,15 +24,19 @@ public:
     QString userName();
     void setUserName(const QString &userName);
     Q_INVOKABLE bool echo(const QString &msg) {
-            qDebug() << "Called the C++ method with" << msg;
-            return true;
+        qDebug() << "Called the C++ method with" << msg;
+        return true;
     }
-    Q_INVOKABLE bool play(const QString &msg) {
+    Q_INVOKABLE bool play(const QString &msg, int rateValue) {
         // char txt[] = "Testing 1 2 3. Using a callback, each phrase is returned separately.";
         // CPRCEN_engine_channel_speak(eng, chan, txt, strlen(txt), 1);
+
+        // wrap text prosody tag to control speach rate
+        QString msg_rate = QString("<s><prosody rate=\"%1\%\">%2</prosody></s>").arg(QString::number(rateValue), msg);
+        //qDebug() << msg_rate;
         
-        toggle = 0;
-        CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg.toStdString().c_str(), msg.length(), 1);
+        triggerNext = 0;
+        CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg_rate.toStdString().c_str(), msg_rate.length(), 1);
         qDebug() << abuf;
 
         return true;
@@ -40,6 +44,8 @@ public:
 
 Q_INVOKABLE bool stop() {
     qDebug()<< "tts_stop";
+    int success = CPRCEN_engine_channel_reset(eng, chan);
+    qDebug() <<"CHannel reset success " << success;
     return true;
     }
     
@@ -59,7 +65,6 @@ signals:
     
 private:
     QString m_userName;
-    int m_rate = 100;
     /// TTS data definitions
     CPRCEN_engine * eng;
     CPRCEN_channel_handle chan;
@@ -67,8 +72,8 @@ private:
 public:
     QAudioOutput *player;
     QAudioFormat * fmt;
-    bool toggle = 0;
+    int triggerNext = 0;
     QThread * thread;
     QEventLoop * loop; // local loop to block the callback
-
+    bool continue_play=true;
 };

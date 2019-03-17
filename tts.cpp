@@ -4,7 +4,7 @@
 #include <QAudioOutput>
 #include <QStandardPaths>
 
-void channel_callback(CPRC_abuf * abuf, void * userdata) {
+void channel_callback(CPRC_abuf * abuf, void * userdata){
 
     tts * _tts = (tts *) userdata;
     QAudioOutput * player = _tts->player;
@@ -23,11 +23,11 @@ void channel_callback(CPRC_abuf * abuf, void * userdata) {
     /// This is optimization for Android where loading the next phrase incures short but audable delay
     /// Here we preallocate all the date, enter the event loop.
     /// When the current playing phrase ends it triggers immediatly the next one.
-    if (_tts->toggle == 1){
+    if (_tts->triggerNext == 1){
         _tts->loop->exec();
     }
     player->start(buffer);
-    _tts->toggle=1;
+    _tts->triggerNext=1;
 }
 
 tts::tts(QObject *parent) : QObject(parent){
@@ -95,3 +95,15 @@ void tts::setUserName(const QString &userName){
     emit userNameChanged();
 }
 
+/*
+
+<s><prosody volume="+6dB">
+I am speaking this at approximately twice the original signal amplitude.
+</prosody></s>
+
+
+<s><prosody rate="80%">
+This is spoken at a slower rate.
+</prosody></s>
+
+ */

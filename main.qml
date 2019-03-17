@@ -3,18 +3,18 @@ import QtQuick.Controls 2.2
 import QtMultimedia 5.0
 
 import custom.tts 1.0
+import QtQuick.Window 2.10
 
 ApplicationWindow {
     id: applicationWindow
     visible: true
-    width: 200
+    width: 300
     height: 480
     title: qsTr("Tabs")
 
     TTS {
         id: tts
     }
-
     Row {
         id: row
         width: parent.width
@@ -35,7 +35,7 @@ ApplicationWindow {
             width: parent.width
             cursorVisible: true
             wrapMode: TextEdit.Wrap
-            font.pixelSize: 10
+            font.pixelSize: 12
         }
 
         Button {
@@ -47,8 +47,8 @@ ApplicationWindow {
             anchors.bottomMargin: 0
             anchors.left: textEdit.left
             anchors.leftMargin: 0
-            //onPressed: {console.log("text change!")}
-            onPressed: tts.play(textEdit.text)
+            //onPressed: {console.log("run play!")}
+            onPressed: tts.play(textEdit.text, rate.value)
         }
 
         Button {
@@ -58,9 +58,10 @@ ApplicationWindow {
             text: qsTr("Pause")
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            anchors.left: parent.left
-            anchors.leftMargin: 60
+            anchors.left: play.right
+            anchors.leftMargin: 0
             onPressed: {
+                //console.log(rate.value)
                 tts.pause();
             }
         }
@@ -72,25 +73,41 @@ ApplicationWindow {
             text: qsTr("Stop")
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
-            anchors.left: parent.left
-            anchors.leftMargin: 120
+            anchors.left: pause.right
+            anchors.leftMargin: 0
             onPressed: {
                 tts.stop();
             }
         }
 
-        Column {
-            id: column
-            width: 400
-            height: 50
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
+        SpinBox {
+            id: rate
+            width: 120
+            anchors.verticalCenter: stop.verticalCenter
+            anchors.left: stop.right
+            anchors.leftMargin: 0
+            editable: true
+            from: 70
+            to: 120
+            value: 100
+
         }
+
     }
+
+
+
 }
 
 
-/*##^## Designer {
-    D{i:21;anchors_height:40;anchors_width:60}D{i:22;anchors_height:40}
-}
- ##^##*/
+
+
+
+
+
+
+
+
+
+
+
