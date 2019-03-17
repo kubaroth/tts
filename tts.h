@@ -38,10 +38,16 @@ public:
         return true;
     }
 
-Q_INVOKABLE bool stop() {    
-    return true;        
+Q_INVOKABLE bool stop() {
+    qDebug()<< "tts_stop";
+    return true;
     }
     
+Q_INVOKABLE bool pause() {
+    qDebug()<< "tts_pause";
+    return true;
+    }
+
 public slots:
     void echo_player(QAudio::State state){
         qDebug() << "echoPlayer " << state;
@@ -53,7 +59,7 @@ signals:
     
 private:
     QString m_userName;
-    int m_rate = 100;    
+    int m_rate = 100;
     /// TTS data definitions
     CPRCEN_engine * eng;
     CPRCEN_channel_handle chan;

@@ -15,76 +15,72 @@ ApplicationWindow {
         id: tts
     }
 
-    TextField {
-        width: 200
-        height: 40
-        text: "this is a test. And this is another. This is a third one. "
-        horizontalAlignment: Text.AlignLeft
-        anchors.centerIn: parent
+    TextEdit {
+        id: textEdit
+        width: 640
+        height: 429
+        text: qsTr("This is a text edit field")
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        wrapMode: TextEdit.Wrap
+        cursorVisible: true
+        font.pixelSize: 10
 
-//       onTextChanged: tts.userName = text
-//       onTextChanged: {console.log("text change!")}
-//       onTextChanged: tts.echo()
-       Keys.onPressed: {
-              if (event.key == Qt.Key_Return) {
-                  tts.userName = text
-                  tts.echo(text)
-                  tts.play(text)
-              }
-       }
-
-
+//        Keys.onPressed: {
+//           if (event.key == Qt.Key_Return) {
+//               tts.userName = text
+//               tts.echo(text)
+//               tts.play(text)
+//           }
+//        }
     }
 
-TextEdit {
-    id: textEdit
-    width: 200
-    height: 127
-    text: qsTr("this is a TextEdit field")
-    anchors.left: parent.left
-    anchors.leftMargin: 0
-    anchors.top: parent.top
-    anchors.topMargin: 0
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.verticalCenter: parent.verticalCenter
-    cursorVisible: false
-    font.pixelSize: 10
+    Button {
+        id: play
+        x: 8
+        width: 60
+        height: 40
+        text: qsTr("Play")
+        anchors.top: textEdit.bottom
+        anchors.topMargin: 8
+        //onPressed: {console.log("text change!")}
+        onPressed: tts.play(textEdit.text)
+    }
 
-    Keys.onPressed: {
-           if (event.key == Qt.Key_Return) {
-               tts.userName = text
-               tts.echo(text)
-               tts.play(text)
-           }
+    Button {
+        id: pause
+        x: 74
+        y: -8
+        width: 60
+        height: 40
+        text: qsTr("Pause")
+        anchors.top: textEdit.bottom
+        anchors.topMargin: 8
+        onPressed: {
+            tts.pause();
+        }
+    }
+
+    Button {
+        id: stop
+        x: 140
+        y: 0
+        width: 60
+        height: 40
+        text: qsTr("Stop")
+        anchors.top: textEdit.bottom
+        anchors.topMargin: 8
+        onPressed: {
+            tts.stop();
+        }
+    }
 }
-}
-
-
-//    Button{
-//        x: 426
-//        y: 220
-//        text: "stop"
-//        onPressed: {
-//            tts.stop();
-//        }
-//    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 /*##^## Designer {
-    D{i:3;anchors_x:220;anchors_y:57}
+    D{i:6;anchors_y:432}D{i:7;anchors_y:432}D{i:8;anchors_y:432}
 }
  ##^##*/
