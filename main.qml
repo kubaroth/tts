@@ -38,13 +38,25 @@ ApplicationWindow {
 
 TextEdit {
     id: textEdit
-    x: 220
-    y: 57
     width: 200
     height: 127
-    text: qsTr("this is a test. And this is another. This is a third one. ")
+    text: qsTr("this is a TextEdit field")
+    anchors.left: parent.left
+    anchors.leftMargin: 0
+    anchors.top: parent.top
+    anchors.topMargin: 0
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: parent.verticalCenter
     cursorVisible: false
-    font.pixelSize: 12
+    font.pixelSize: 10
+
+    Keys.onPressed: {
+           if (event.key == Qt.Key_Return) {
+               tts.userName = text
+               tts.echo(text)
+               tts.play(text)
+           }
+}
 }
 
 
@@ -57,3 +69,22 @@ TextEdit {
 //        }
 //    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*##^## Designer {
+    D{i:3;anchors_x:220;anchors_y:57}
+}
+ ##^##*/
