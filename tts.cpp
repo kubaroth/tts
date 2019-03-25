@@ -23,6 +23,7 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
     /// This is optimization for Android where loading the next phrase incures short but audable delay
     /// Here we preallocate all the date, enter the event loop.
     /// When the current playing phrase ends it triggers immediatly the next one.
+//    if ((_tts->triggerNext == 1) or (player->state() == QAudio::State::SuspendedState) ){
     if (_tts->triggerNext == 1){
         _tts->loop->exec();
     }

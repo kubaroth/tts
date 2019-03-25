@@ -24,18 +24,23 @@ ApplicationWindow {
 
         TextEdit {
             id: textEdit
-            text: qsTr("This is a text edit field. This is a text edit field. This is a text edit field. ")
+            text: qsTr("The puquios are an old system of subterranean aqueducts near the city of Nazca, Peru. Out of 36 puquios, most are still functioning and even relied upon to bring fresh water into the arid desert. The puquios have never been fully mapped, nor have any been excavated.")
+            anchors.verticalCenter: parent.verticalCenter
+            rightPadding: 10
+            bottomPadding: 10
+            leftPadding: 10
+            topPadding: 10
+            renderType: Text.NativeRendering
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.left: parent.left
             anchors.leftMargin: 0
             anchors.top: parent.top
-            anchors.topMargin: 0
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 40
+            anchors.topMargin: 40
             width: parent.width
             cursorVisible: true
             wrapMode: TextEdit.Wrap
             font.pixelSize: 12
+
         }
 
         Button {
@@ -43,8 +48,6 @@ ApplicationWindow {
             width: 60
             height: 40
             text: qsTr("Play")
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
             anchors.left: textEdit.left
             anchors.leftMargin: 0
             //onPressed: {console.log("run play!")}
@@ -56,8 +59,6 @@ ApplicationWindow {
             width: 60
             height: 40
             text: qsTr("Pause")
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
             anchors.left: play.right
             anchors.leftMargin: 0
             onPressed: {
@@ -71,8 +72,6 @@ ApplicationWindow {
             width: 60
             height: 40
             text: qsTr("Stop")
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
             anchors.left: pause.right
             anchors.leftMargin: 0
             onPressed: {
@@ -89,7 +88,7 @@ ApplicationWindow {
             editable: true
             from: 70
             to: 120
-            value: 100
+            value: 90
 
         }
 
@@ -111,3 +110,24 @@ ApplicationWindow {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/

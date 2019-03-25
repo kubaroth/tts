@@ -32,10 +32,14 @@ public:
         // CPRCEN_engine_channel_speak(eng, chan, txt, strlen(txt), 1);
 
         // wrap text prosody tag to control speach rate
-        QString msg_rate = QString("<s><prosody rate=\"%1\%\">%2</prosody></s>").arg(QString::number(rateValue), msg);
+        QString msg_rate = QString("<s><prosody rate=\"%1\%\">%2 </prosody></s>").arg(QString::number(rateValue), msg);
         //qDebug() << msg_rate;
         
+        // ignore subsequent play if the former is still playing
+        if (player->state() == QAudio::State::ActiveState) return false;
+
         triggerNext = 0;
+        // reset the channel before playing again
         CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg_rate.toStdString().c_str(), msg_rate.length(), 1);
         qDebug() << abuf;
 
@@ -51,6 +55,16 @@ Q_INVOKABLE bool stop() {
     
 Q_INVOKABLE bool pause() {
     qDebug()<< "tts_pause";
+    if (player->state() == QAudio::State::ActiveState){
+        player->suspend();
+    }
+    else if (player->state() == QAudio::State::SuspendedState){
+        player->resume();
+    }
+    else{
+        qDebug() << player->state();
+    }
+
     return true;
     }
 
