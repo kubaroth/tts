@@ -43,6 +43,18 @@ ApplicationWindow {
 
             // try out links
             //onLinkActivated: Qt.openUrlExternally(link)
+
+            function text_to_read(){
+                var pos = textarea.cursorPosition;;
+                while (pos > 0) {
+                    var text = textarea.getText(pos-1,pos);
+                    console.log(text);
+                    if (text == " ") break;
+                    pos = pos -1;
+                }
+                var text_tts = getText(pos, textarea.length);
+                return text_tts
+              }
         }
         ScrollBar.vertical: ScrollBar { }
     }
@@ -54,8 +66,10 @@ ApplicationWindow {
             text: qsTr("Play")
             anchors.left: textarea.left
             anchors.leftMargin: 0
-            //onPressed: {console.log("run play!")}
-            onPressed: tts.play(textarea.text, rate.value)
+            onPressed: {
+                console.log(textarea.text_to_read())
+                tts.play(textarea.text_to_read(), rate.value)
+            }
         }
 
         Button {
