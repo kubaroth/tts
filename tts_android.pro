@@ -3,22 +3,24 @@ CONFIG += c++11
 
 # gcc a.o -Wl,-Bstatic -lfoo -Wl,-Bdynamic -lbar
 
+ROOT = "$$PWD"
 linux:!android {
     message("* Using settings for Unix/Linux.")
+    
+    INCLUDEPATH += $$ROOT/libs/include/
+    LIBS += -L$$ROOT/libs//static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
 
-#    INCLUDEPATH += /home/kuba/SRC/TTS/sdk_4.0.4_linux_x86_64_python27/cerevoice_aud/include
-    INCLUDEPATH += /home/kuba/PRJ/cpp_rozne/tts_android/libs/include
-    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs/static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
-
-#    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
-#    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    # While testing commenting out copy line will speed up startup
+    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
 }
 
 android {
     message("* Using settings for Android.")
-    #### Android arm-v7
-    INCLUDEPATH += //home/kuba/SRC/TTS/cerevoice_sdk_4.0.4_android_14358_beta/cerevoice_eng/include
-    LIBS += -L/home/kuba/PRJ/cpp_rozne/tts_android/libs_android/static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts  -Wl,--end-group
+    #### Build for Android arm-v7
+    INCLUDEPATH += $$ROOT/libs/include/
+
+    LIBS += -L$$ROOT/libs_android/static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts  -Wl,--end-group
 
     deployment.files=file_data/*
     #deployment.files=file_data/license_eng.lic   # used for debugging if the file is copied into the right place
@@ -48,29 +50,13 @@ SOURCES += \
 RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH += /home/kuba/toolchains/qt512/5.12.0/gcc_64/qml
+QML_IMPORT_PATH += $$[QT_INSTALL_PREFIX]/qml
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
-
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-DISTFILES += \
-    android/AndroidManifest.xml \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradlew \
-    android/res/values/libs.xml \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
-
-contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
-    ANDROID_PACKAGE_SOURCE_DIR = \
-        $$PWD/android
-}
-
 
