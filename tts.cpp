@@ -20,19 +20,49 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
     QBuffer *buffer = new QBuffer(bytes, player);
     buffer->open(QIODevice::ReadWrite);
 
-    /// This is optimization for Android where loading the next phrase incures short but audable delay
-    /// Here we preallocate all the date, enter the event loop.
-    /// When the current playing phrase ends it triggers immediatly the next one.
-//    if ((_tts->triggerNext == 1) or (player->state() == QAudio::State::SuspendedState) ){
-    if (_tts->triggerNext == 1){
-        _tts->loop->exec();
-    }
+    // Start player and holds before next callback is triggered
+    // The event loop is release with the QAudioOutput::stateChanged signal
     player->start(buffer);
-    _tts->triggerNext=1;
+    _tts->loop->exec();
+
+}
+
+Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
+     chan = CPRCEN_engine_open_default_channel(eng);
+       int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
+     /// Seting audio parms
+     QAudioFormat * fmt = new QAudioFormat();
+     fmt->setCodec("audio/pcm");
+     fmt->setSampleRate(freq);  // 48000
+     fmt->setSampleSize(16);
+     fmt->setChannelCount(1);
+     fmt->setSampleType(QAudioFormat::SignedInt);
+     fmt->setByteOrder(QAudioFormat::LittleEndian);
+     player = new QAudioOutput(*fmt, this);
+
+     loop = new QEventLoop(this);
+
+     CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
+
+     // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
+     connect(player, &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
+     //connect(player,  &QAudioOutput::notify, this, []( ) { qDebug()<<"debugging state changed";} );
+
+    // wrap text prosody tag to control speach rate
+    QString msg_rate = QString("<s><prosody rate=\"%1\%\">%2 </prosody></s>").arg(QString::number(rateValue), msg);
+    //qDebug() << msg_rate;
+
+    // ignore subsequent play if the former is still playing
+    if (player->state() == QAudio::State::ActiveState) return false;
+
+    // reset the channel before playing again
+    CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg_rate.toStdString().c_str(), msg_rate.length(), 1);
+    qDebug() << abuf;
+
+    return true;
 }
 
 tts::tts(QObject *parent) : QObject(parent){
-    
     /// On start extract file from android assets and place them in the AppDataLocation
     /// C++ libraries can not access files from Qt/android resources directly
 #ifdef Q_OS_ANDROID
@@ -58,34 +88,18 @@ tts::tts(QObject *parent) : QObject(parent){
     eng = CPRCEN_engine_load("license_eng.lic", "tts_eng.voice");
 #endif
     chan = CPRCEN_engine_open_default_channel(eng);
-    int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
-    qDebug() << freq;
-
-    /// Seting audio parms
-    QAudioFormat * fmt = new QAudioFormat();
-    fmt->setCodec("audio/pcm");
-    fmt->setSampleRate(freq);  // 48000
-    fmt->setSampleSize(16);
-    fmt->setChannelCount(1);
-    fmt->setSampleType(QAudioFormat::SignedInt);
-    fmt->setByteOrder(QAudioFormat::LittleEndian);
-    player = new QAudioOutput(*fmt, this);
-
     loop = new QEventLoop(this);
 
-    /// Callbacks and signals
-    CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
+    // NOTE: All the callbacks and player ar reinitialized in the play  method
 
-    connect(player, &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
-
-}
+  }
 
 tts::~tts(){
     delete player;
 }
 
 QString tts::userName(){
-    return m_userName;
+        return m_userName;
 }
 
 void tts::setUserName(const QString &userName){
