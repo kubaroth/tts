@@ -14,6 +14,8 @@
 
 #include <cerevoice_eng.h>
 
+// #include "pdf_text_extract/text.h"
+#include <text.h>
 
 class tts : public QObject{
     Q_OBJECT
@@ -38,7 +40,9 @@ Q_INVOKABLE bool stop() {
 }
 
 Q_INVOKABLE bool pause() {
-    qDebug()<< "tts_pause " << player->state();
+    // NOTE: this pdf should be copied to the same dir as executable
+    auto textDataPtr = parse_page("test_openoffice.pdf", 0);
+    std::cout << "read result2:"<< textDataPtr->text << std::endl;;
 
     return true;
     }

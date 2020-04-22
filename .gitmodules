@@ -1,0 +1,7 @@
+[submodule "pdf_hummus_parser"]
+    path = pdf_hummus_parser
+    url = https://github.com/kubaroth/PDF-Writer.git
+    branch = neon-arm64
+[submodule "pdf_text_extract"]
+	path = pdf_text_extract
+	url = https://github.com/kubaroth/pdf.git
