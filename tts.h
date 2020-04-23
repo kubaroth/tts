@@ -9,6 +9,7 @@
 #include <QAudioOutput>
 #include <QFile>
 #include <QDir>
+#include <QStandardPaths>
 
 #include <QEventLoop>
 
@@ -39,12 +40,28 @@ Q_INVOKABLE bool stop() {
     return true;
 }
 
-Q_INVOKABLE bool pause() {
-    // NOTE: this pdf should be copied to the same dir as executable
-    auto textDataPtr = parse_page("test_openoffice.pdf", 0);
-    std::cout << "read result2:"<< textDataPtr->text << std::endl;;
+Q_INVOKABLE QString load_pdf() {
+    std::string pdfPath = "curious_character.pdf"; // qmake copy to target build location
+    // NOTE: the pdf is stored in .file_data/ and is copied to 'assets' directory
+    // deployed in apk. At runtime it is extracted and copied to area with permissions
+#ifdef Q_OS_ANDROID
+    QString appDataLocation = QStandardPaths::writableLocation(QStandardPaths::StandardLocation::AppDataLocation);
+    QString pdfPathWithPermissions = appDataLocation + "/curious_character.pdf";
 
-    return true;
+    QFile assetsFile;
+    assetsFile.setFileName("assets:/tts_data/curious_character.pdf");
+    assetsFile.copy(pdfPathWithPermissions);
+    QFile::setPermissions(pdfPathWithPermissions, QFile::WriteOwner | QFile::ReadOwner);
+
+    pdfPath = pdfPathWithPermissions.toStdString();
+#endif
+    auto textDataPtr = parse_page(pdfPath, 0);
+    QString textStr = "";
+    if (textDataPtr){
+        std::cout << "read result2:"<< textDataPtr->text << std::endl;
+        textStr = QString::fromStdString(textDataPtr->text);
+    }
+    return textStr;
     }
 
 public slots:

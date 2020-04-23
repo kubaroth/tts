@@ -2,7 +2,6 @@
 
 #include <QDataStream>
 #include <QAudioOutput>
-#include <QStandardPaths>
 
 void channel_callback(CPRC_abuf * abuf, void * userdata){
 

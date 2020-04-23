@@ -73,15 +73,17 @@ ApplicationWindow {
         }
 
         Button {
-            id: pause
+            id: pdf
             width: 60
             height: 40
-            text: qsTr("Pause")
+            text: qsTr("PDF")
             anchors.left: play.right
             anchors.leftMargin: 0
             onPressed: {
-                //console.log(rate.value)
-                tts.pause();
+                var pdf_text = tts.load_pdf();
+                console.log(pdf_text)
+                textarea.clear();
+                textarea.text = pdf_text
             }
         }
 
@@ -90,7 +92,7 @@ ApplicationWindow {
             width: 60
             height: 40
             text: qsTr("Stop")
-            anchors.left: pause.right
+            anchors.left: pdf.right
             anchors.leftMargin: 0
             onPressed: {
                 tts.stop();

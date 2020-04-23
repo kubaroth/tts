@@ -22,6 +22,9 @@ linux:!android {
     # While testing commenting out copy line will speed up startup
     QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
     QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+
+    # copy test pdf
+    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/curious_character.pdf) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
 }
 
 android {
@@ -35,11 +38,13 @@ android {
 
     QMAKE_LIBDIR += $$ROOT/__install_android/lib
     LIBS += -Wl,--start-group -lPDFWriter -lFreeType -lLibAesgm -lLibPng -lLibTiff -lLibJpeg -lZlib -Wl,--end-group
-    
+
+    # NOTE: seems like only single deployment/directory can be handled
     deployment.files=file_data/*
     #deployment.files=file_data/license_eng.lic   # used for debugging if the file is copied into the right place
     deployment.path=/assets/tts_data #all assets must go to "/assets" folder of your android package
     INSTALLS += deployment
+
 }
 
 
