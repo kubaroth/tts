@@ -1,8 +1,8 @@
 #/bin/bash
 
-ANDROID_NDK_ROOT=$HOME/Android/Sdk/ndk/21.0.6113669/
-ANDROID_SDK_ROOT=$HOME/Android/Sdk
-ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_NDK_ROOT=$HOME/Android/Sdk/ndk/21.0.6113669/
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+export ANDROID_HOME=$HOME/Android/Sdk
 QT_ROOT=$HOME/toolchains/Qt5.14.0/5.14.0
 QMAKE=$QT_ROOT/android/bin/qmake
 
@@ -32,7 +32,7 @@ cd $ROOT/__build_android
 
 $QMAKE $ROOT/tts_android.pro -spec android-clang CONFIG+=debug CONFIG+=qml_debug ANDROID_ABIS=armeabi-v7a
 
-make -j 4
+make -j 4 install
 cd $ROOT
 
 ##### humus linux build
