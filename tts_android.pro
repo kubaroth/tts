@@ -13,18 +13,18 @@ linux:!android {
     INCLUDEPATH += $$ROOT/__install_linux/include
     INCLUDEPATH += $$ROOT/pdf_text_extract
 
-    LIBS += -L$$ROOT/libs//static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
+    #LIBS += -L$$ROOT/libs//static -Wl,--start-group -lcerevoice_pmod -lcerevoice_eng -lcerevoice -lcerehts -Wl,--end-group
 
     QMAKE_LIBDIR += $$ROOT/__install_linux/lib
     LIBS += -Wl,--start-group -lPDFWriter -lFreeType -lLibAesgm -lLibPng -lLibTiff -lLibJpeg -lZlib -Wl,--end-group
 
     
     # While testing commenting out copy line will speed up startup
-    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
-    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    #QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/license_eng.lic) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    #QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/tts_eng.voice) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
 
     # copy test pdf
-    QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/curious_character.pdf) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
+    #QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$shell_quote($$PWD/file_data/curious_character.pdf) $$shell_quote($$OUT_PWD) $$escape_expand(\\n\\t)
 }
 
 android {

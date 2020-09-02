@@ -3,32 +3,34 @@
 #include <QDataStream>
 #include <QAudioOutput>
 
-void channel_callback(CPRC_abuf * abuf, void * userdata){
+// void channel_callback(CPRC_abuf * abuf, void * userdata){
 
-    tts * _tts = (tts *) userdata;
-    QAudioOutput * player = _tts->player;
+//     tts * _tts = (tts *) userdata;
+//     QAudioOutput * player = _tts->player;
 
-    // length of the adio in the buffer
-    int len = CPRC_abuf_wav_sz(abuf) * 2;
-    // pointer to the raw audio data;
-    char * wav = (char *) CPRC_abuf_wav_data(abuf);
+//     // length of the adio in the buffer
+//     int len = CPRC_abuf_wav_sz(abuf) * 2;
+//     // pointer to the raw audio data;
+//     char * wav = (char *) CPRC_abuf_wav_data(abuf);
 
-    qDebug() << "callback---------------";
+//     qDebug() << "callback---------------";
 
-    QByteArray * bytes = new QByteArray(wav,len);
-    QBuffer *buffer = new QBuffer(bytes, player);
-    buffer->open(QIODevice::ReadWrite);
+//     QByteArray * bytes = new QByteArray(wav,len);
+//     QBuffer *buffer = new QBuffer(bytes, player);
+//     buffer->open(QIODevice::ReadWrite);
 
-    // Start player and holds before next callback is triggered
-    // The event loop is release with the QAudioOutput::stateChanged signal
-    player->start(buffer);
-    _tts->loop->exec();
+//     // Start player and holds before next callback is triggered
+//     // The event loop is release with the QAudioOutput::stateChanged signal
+//     player->start(buffer);
+//     _tts->loop->exec();
 
-}
+// }
 
 Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
-     chan = CPRCEN_engine_open_default_channel(eng);
-       int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
+     // chan = CPRCEN_engine_open_default_channel(eng);
+     // int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
+     int freq = 1;
+    
      /// Seting audio parms
      QAudioFormat * fmt = new QAudioFormat();
      fmt->setCodec("audio/pcm");
@@ -41,7 +43,7 @@ Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
 
      loop = new QEventLoop(this);
 
-     CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
+     // CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
 
      // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
      connect(player, &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
@@ -55,8 +57,8 @@ Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
     if (player->state() == QAudio::State::ActiveState) return false;
 
     // reset the channel before playing again
-    CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg_rate.toStdString().c_str(), msg_rate.length(), 1);
-    qDebug() << abuf;
+    // CPRC_abuf * abuf = CPRCEN_engine_channel_speak(eng, chan, msg_rate.toStdString().c_str(), msg_rate.length(), 1);
+    // qDebug() << abuf;
 
     return true;
 }
@@ -84,9 +86,9 @@ tts::tts(QObject *parent) : QObject(parent){
 
 #ifdef __linux__
     /// Init voice
-    eng = CPRCEN_engine_load("license_eng.lic", "tts_eng.voice");
+    // eng = CPRCEN_engine_load("license_eng.lic", "tts_eng.voice");
 #endif
-    chan = CPRCEN_engine_open_default_channel(eng);
+    // chan = CPRCEN_engine_open_default_channel(eng);
     loop = new QEventLoop(this);
 
     // NOTE: All the callbacks and player ar reinitialized in the play  method

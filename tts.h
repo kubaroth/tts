@@ -13,7 +13,7 @@
 
 #include <QEventLoop>
 
-#include <cerevoice_eng.h>
+//#include <cerevoice_eng.h>
 
 // #include "pdf_text_extract/text.h"
 #include <text.h>
@@ -35,7 +35,7 @@ public:
 
 Q_INVOKABLE bool stop() {
     qDebug()<< "tts_stop";
-    int success = CPRCEN_engine_channel_reset(eng, chan);
+    // int success = CPRCEN_engine_channel_reset(eng, chan);
     player->stop();
     return true;
 }
@@ -76,8 +76,8 @@ signals:
 private:
     QString m_userName;
     /// TTS data definitions
-    CPRCEN_engine * eng;
-    CPRCEN_channel_handle chan;
+    // CPRCEN_engine * eng;
+    // CPRCEN_channel_handle chan;
 
 public:
     QAudioOutput *player;
