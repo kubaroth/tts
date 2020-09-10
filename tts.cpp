@@ -15,8 +15,8 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
 
     qDebug() << "callback---------------";
 
-    QByteArray * bytes = new QByteArray(wav,len);
-    QBuffer *buffer = new QBuffer(bytes, player);
+    QByteArray bytes = QByteArray(wav,len);
+    QBuffer *buffer = new QBuffer(&bytes, player);
     buffer->open(QIODevice::ReadWrite);
 
     // Start player and holds before next callback is triggered
@@ -30,14 +30,14 @@ Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
      chan = CPRCEN_engine_open_default_channel(eng);
        int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
      /// Seting audio parms
-     QAudioFormat * fmt = new QAudioFormat();
-     fmt->setCodec("audio/pcm");
-     fmt->setSampleRate(freq);  // 48000
-     fmt->setSampleSize(16);
-     fmt->setChannelCount(1);
-     fmt->setSampleType(QAudioFormat::SignedInt);
-     fmt->setByteOrder(QAudioFormat::LittleEndian);
-     player = new QAudioOutput(*fmt, this);
+     QAudioFormat fmt = QAudioFormat();
+     fmt.setCodec("audio/pcm");
+     fmt.setSampleRate(freq);  // 48000
+     fmt.setSampleSize(16);
+     fmt.setChannelCount(1);
+     fmt.setSampleType(QAudioFormat::SignedInt);
+     fmt.setByteOrder(QAudioFormat::LittleEndian);
+     player = new QAudioOutput(fmt, this);
 
      loop = new QEventLoop(this);
 
@@ -95,6 +95,9 @@ tts::tts(QObject *parent) : QObject(parent){
 
 tts::~tts(){
     delete player;
+    delete loop;
+    CPRCEN_engine_unload_voice(eng, 0);
+    CPRCEN_engine_delete(eng);
 }
 
 QString tts::userName(){
