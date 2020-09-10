@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QObject>
 #include <QDebug>
 
@@ -80,7 +82,7 @@ private:
     CPRCEN_channel_handle chan;
 
 public:
-    QAudioOutput *player;
+    std::unique_ptr<QAudioOutput> player;
     QAudioFormat * fmt;
     QThread * thread;
     QEventLoop * loop; // local loop to block the callback

@@ -108,7 +108,7 @@ ApplicationWindow {
             editable: true
             from: 70
             to: 120
-            value: 90
+            value: 100
         }
 }
 

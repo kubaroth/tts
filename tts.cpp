@@ -6,7 +6,7 @@
 void channel_callback(CPRC_abuf * abuf, void * userdata){
 
     tts * _tts = (tts *) userdata;
-    QAudioOutput * player = _tts->player;
+    //QAudioOutput * player = _tts->player.get();
 
     // length of the adio in the buffer
     int len = CPRC_abuf_wav_sz(abuf) * 2;
@@ -16,12 +16,12 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
     qDebug() << "callback---------------";
 
     QByteArray bytes = QByteArray(wav,len);
-    QBuffer *buffer = new QBuffer(&bytes, player);
+    QBuffer *buffer = new QBuffer(&bytes, _tts->player.get());
     buffer->open(QIODevice::ReadWrite);
 
     // Start player and holds before next callback is triggered
     // The event loop is release with the QAudioOutput::stateChanged signal
-    player->start(buffer);
+    _tts->player->start(buffer);
     _tts->loop->exec();
 
 }
@@ -37,14 +37,14 @@ Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
      fmt.setChannelCount(1);
      fmt.setSampleType(QAudioFormat::SignedInt);
      fmt.setByteOrder(QAudioFormat::LittleEndian);
-     player = new QAudioOutput(fmt, this);
+     player = std::unique_ptr<QAudioOutput>(new QAudioOutput(fmt, this));
 
      loop = new QEventLoop(this);
 
      CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
 
      // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
-     connect(player, &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
+     connect(player.get(), &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
      //connect(player,  &QAudioOutput::notify, this, []( ) { qDebug()<<"debugging state changed";} );
 
     // wrap text prosody tag to control speach rate
@@ -94,7 +94,6 @@ tts::tts(QObject *parent) : QObject(parent){
   }
 
 tts::~tts(){
-    delete player;
     delete loop;
     CPRCEN_engine_unload_voice(eng, 0);
     CPRCEN_engine_delete(eng);
