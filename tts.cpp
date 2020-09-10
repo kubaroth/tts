@@ -6,7 +6,7 @@
 void channel_callback(CPRC_abuf * abuf, void * userdata){
 
     tts * _tts = (tts *) userdata;
-    //QAudioOutput * player = _tts->player.get();
+    QAudioOutput * player = _tts->player.get();
 
     // length of the adio in the buffer
     int len = CPRC_abuf_wav_sz(abuf) * 2;
@@ -16,38 +16,37 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
     qDebug() << "callback---------------";
 
     QByteArray bytes = QByteArray(wav,len);
-    QBuffer *buffer = new QBuffer(&bytes, _tts->player.get());
+    QBuffer *buffer = new QBuffer(&bytes, player);
     buffer->open(QIODevice::ReadWrite);
 
     // Start player and holds before next callback is triggered
     // The event loop is release with the QAudioOutput::stateChanged signal
-    _tts->player->start(buffer);
+    player->start(buffer);
     QEventLoop * last_even_loop = _tts->event_loop_list[_tts->event_loop_list.size()-1].get();
     last_even_loop->exec();
-
 }
 
 Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
-     chan = CPRCEN_engine_open_default_channel(eng);
-       int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
-     /// Seting audio parms
-     QAudioFormat fmt = QAudioFormat();
-     fmt.setCodec("audio/pcm");
-     fmt.setSampleRate(freq);  // 48000
-     fmt.setSampleSize(16);
-     fmt.setChannelCount(1);
-     fmt.setSampleType(QAudioFormat::SignedInt);
-     fmt.setByteOrder(QAudioFormat::LittleEndian);
-     player = std::unique_ptr<QAudioOutput>(new QAudioOutput(fmt, this));
+    chan = CPRCEN_engine_open_default_channel(eng);
+    int freq = atoi(CPRCEN_channel_get_voice_info(eng, chan, "SAMPLE_RATE"));
+    /// Seting audio parms
+    QAudioFormat fmt = QAudioFormat();
+    fmt.setCodec("audio/pcm");
+    fmt.setSampleRate(freq);  // 48000
+    fmt.setSampleSize(16);
+    fmt.setChannelCount(1);
+    fmt.setSampleType(QAudioFormat::SignedInt);
+    fmt.setByteOrder(QAudioFormat::LittleEndian);
+    player = std::unique_ptr<QAudioOutput>(new QAudioOutput(fmt, this));
 
-     event_loop_list.emplace_back(std::unique_ptr<QEventLoop>(new QEventLoop(this)));
-     QEventLoop * last_even_loop = event_loop_list[event_loop_list.size()-1].get();
+    event_loop_list.emplace_back(std::unique_ptr<QEventLoop>(new QEventLoop(this)));
+    QEventLoop * last_even_loop = event_loop_list[event_loop_list.size()-1].get();
 
-     CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
+    CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
 
-     // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
-     connect(player.get(), &QAudioOutput::stateChanged, last_even_loop, &QEventLoop::quit );
-     //connect(player,  &QAudioOutput::notify, this, []( ) { qDebug()<<"debugging state changed";} );
+    // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
+    connect(player.get(), &QAudioOutput::stateChanged, last_even_loop, &QEventLoop::quit );
+    //connect(player,  &QAudioOutput::notify, this, []( ) { qDebug()<<"debugging state changed";} );
 
     // wrap text prosody tag to control speach rate
     QString msg_rate = QString("<s><prosody rate=\"%1\%\">%2 </prosody></s>").arg(QString::number(rateValue), msg);
@@ -91,7 +90,7 @@ tts::tts(QObject *parent) : QObject(parent){
     chan = CPRCEN_engine_open_default_channel(eng);
     event_loop_list.emplace_back(std::unique_ptr<QEventLoop>(new QEventLoop(this)));
 
-    // NOTE: All the callbacks and player ar reinitialized in the play  method
+    // NOTE: All the callbacks and player ar reinitialized in the play method
 
   }
 
@@ -101,12 +100,13 @@ tts::~tts(){
 }
 
 QString tts::userName(){
-        return m_userName;
+    return m_userName;
 }
 
 void tts::setUserName(const QString &userName){
-    if (userName == m_userName)
+    if (userName == m_userName) {
         return;
+    }
 
     m_userName = userName;
     emit userNameChanged();

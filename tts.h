@@ -84,8 +84,6 @@ private:
 
 public:
     std::unique_ptr<QAudioOutput> player;
-    QAudioFormat * fmt;
-    QThread * thread;
     std::vector<std::unique_ptr<QEventLoop>> event_loop_list; // local loop to block the callback
     bool continue_play=true;
 };
