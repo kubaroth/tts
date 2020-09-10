@@ -22,7 +22,8 @@ void channel_callback(CPRC_abuf * abuf, void * userdata){
     // Start player and holds before next callback is triggered
     // The event loop is release with the QAudioOutput::stateChanged signal
     _tts->player->start(buffer);
-    _tts->loop->exec();
+    QEventLoop * last_even_loop = _tts->event_loop_list[_tts->event_loop_list.size()-1].get();
+    last_even_loop->exec();
 
 }
 
@@ -39,12 +40,13 @@ Q_INVOKABLE bool tts::play(const QString &msg, int rateValue) {
      fmt.setByteOrder(QAudioFormat::LittleEndian);
      player = std::unique_ptr<QAudioOutput>(new QAudioOutput(fmt, this));
 
-     loop = new QEventLoop(this);
+     event_loop_list.emplace_back(std::unique_ptr<QEventLoop>(new QEventLoop(this)));
+     QEventLoop * last_even_loop = event_loop_list[event_loop_list.size()-1].get();
 
      CPRCEN_engine_set_callback(eng, chan, (void *)this, channel_callback);
 
      // As we resetting playber and callback each time play is pressed - we need to reconect singnals too
-     connect(player.get(), &QAudioOutput::stateChanged, loop, &QEventLoop::quit );
+     connect(player.get(), &QAudioOutput::stateChanged, last_even_loop, &QEventLoop::quit );
      //connect(player,  &QAudioOutput::notify, this, []( ) { qDebug()<<"debugging state changed";} );
 
     // wrap text prosody tag to control speach rate
@@ -87,14 +89,13 @@ tts::tts(QObject *parent) : QObject(parent){
     eng = CPRCEN_engine_load("license_eng.lic", "tts_eng.voice");
 #endif
     chan = CPRCEN_engine_open_default_channel(eng);
-    loop = new QEventLoop(this);
+    event_loop_list.emplace_back(std::unique_ptr<QEventLoop>(new QEventLoop(this)));
 
     // NOTE: All the callbacks and player ar reinitialized in the play  method
 
   }
 
 tts::~tts(){
-    delete loop;
     CPRCEN_engine_unload_voice(eng, 0);
     CPRCEN_engine_delete(eng);
 }

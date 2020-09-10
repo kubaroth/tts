@@ -39,6 +39,7 @@ Q_INVOKABLE bool stop() {
     qDebug()<< "tts_stop";
     int success = CPRCEN_engine_channel_reset(eng, chan);
     player->stop();
+
     return true;
 }
 
@@ -85,6 +86,6 @@ public:
     std::unique_ptr<QAudioOutput> player;
     QAudioFormat * fmt;
     QThread * thread;
-    QEventLoop * loop; // local loop to block the callback
+    std::vector<std::unique_ptr<QEventLoop>> event_loop_list; // local loop to block the callback
     bool continue_play=true;
 };
