@@ -1,3 +1,10 @@
+# TTS
+A self contained PDF - Text To Speech application for Linux desktop and Android. No runtime dependency on the host system libraries required  (Google TTS, PDF). The library does depend on two key third-party libraries:
+- PDF-Writer - https://github.com/galkahana/PDF-Writer
+- libcerevoice - https://www.cereproc.com/en/products/sdk
+- QtQuick with 3rd party library wrappers
+
+[![demo - Text To Speach](./images/demo.png)](./images/demo.mp4)
 
 # Dependencies
 Qt5.14 - As long as QtQuick is compatible with some version Android API
