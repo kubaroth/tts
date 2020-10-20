@@ -4,7 +4,7 @@ A self contained PDF - Text To Speech application for Linux desktop and Android.
 - libcerevoice - https://www.cereproc.com/en/products/sdk
 - QtQuick with 3rd party library wrappers
 
-[![demo - Text To Speach](./images/demo.png)](./images/demo.mp4)
+[![demo - Text To Speach](./images/demo.png)](https://kubaroth.github.io/tts/images/demo.mp4)
 
 # Dependencies
 Qt5.14 - As long as QtQuick is compatible with some version Android API
